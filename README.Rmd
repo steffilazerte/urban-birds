@@ -1,0 +1,10 @@
+---
+output: github_document
+---
+## Results
+
+```{r, echo = FALSE, results="asis"}
+r <- list.files("./Results", pattern = ".html")
+cat(paste0(paste0("- [", r, "](https://steffilazerte.github.io/urban-birds/", r, ")"),
+       collapse = "\n"))
+```

@@ -1,0 +1,78 @@
+---
+title: "Urban Birds: Thoughts"
+output: html_document
+---
+
+```{r eval = FALSE}
+rmarkdown::render("./Scripts/01_thoughts.Rmd", output_dir = "./Results/")
+```
+
+## Questions/Scope
+
+1. Are some avian species better adapted to urban environments than others?
+  - **Note**: We can't really say anything about 'adaptations', just presence
+2. Is there such thing as an 'urban exploiter'? Can we determine an empirical definition of these terms?
+  - What about different terms?
+  - Urban engager? Urban seeker? Urban embracer?
+  
+Label     |   Description    |   Empirical definition<br>(Relative population densities)   | Statistical Definition<br>(Population ~ Urbanization)
+--------- | ---------------- | ------------------------ | ----------------------
+Exploiter | Thrive in urban areas | Higher in urban areas than in rural areas | Positive
+Adapter   | Able to persist in urban areas | Equal between urban and rural areas | None
+Avoider   | Unable to persist in urban areas | Lower in urban areas than in rural areas | Negative
+
+## Analysis
+
+### Variables of interest: 
+- Unit of measurement: 500m grid point based on Modis
+- Ebird lists (with all species) summarized to Presence or Absence of a species in a given 500m pixel
+    - (yes, no) ~ urban area + (1|pixel)  
+- Urbanization - Use modis yes/no for urban area? 
+- Degree of urbanization - Human population density? % impervious surface?
+- Variables to account for:
+  - Habitat differences? Ecoregions?
+  - Region size
+  - Distance to nearest urban pixel?
+  - Distance to nearest rural pixel?
+
+### Spatial regression
+
+- ([reading](https://rspatial.org/analysis/7-spregression.html))
+- Probility that a species is on an ebird list ~ Urban area (yes/no?) + (|pixel/site)
+- Mixed models with random factors accounting for nested variation (pixel/site)
+    - Site could be overkill, depends on the numbers of sites per pixel
+- Definitely have spatial autocorrelation among pixels
+  
+### Things to consider
+
+- What time frame? Populations in a particular year? Particular time of year?
+  - Look at the data and see what we've got? 
+  - Match the dates of modis (something like 2003ish?)
+  
+- What spatial frame? 
+    - What is the spatial extent of the study? (How much data do we have access to?)
+    
+- Which species are we looking at? Are picking birds that are *always* considered exloiters, adapters, avoiders? Do we want to compare invasives to natives? Are we limited to a niche?
+  - Use minimum sample size as a cutoff (i.e. must be present on at least X ebird lists)
+  - I would suggest picking at least some common urban species (robins, chickadees, house sparrows, pigeons) and perhaps some species for which urbanization has been blamed for their decline (??)
+  - Eastern North America is more populated, perhaps best to select only birds that live in the east (exclusively?)
+  
+- How do we differentiate between urbanization and loss of habitat... do we care? Are we focussed on Urban Exploiters, more than the other categories?
+  - Rural areas are not necessarily good habitat, so if we stick to modis which is urbanization (doesn't count agricultural fields, etc.), we will only pick out birds that are for/against urbanization (regardless of habitat loss?)
+
+## Data Sources
+
+### Avian Populations
+
+- ebird (via [`auk`](https://cornelllabofornithology.github.io/auk/))
+- naturecounts (some overlap with ebird via [`naturecounts`](https://cornelllabofornithology.github.io/auk/))
+
+### Urbanization
+
+Modis map - 500m resolution of urbanization
+
+  - [best of 10 available for c2000](https://www.tandfonline.com/doi/full/10.1080/01431160903121134)
+  - [Details](http://landcoverchange.com/wp-content/uploads/2017/04/readme_modis500m_urban_map.pdf)
+  - [Paper](http://landcoverchange.com/wp-content/uploads/2015/03/schneider_et_al_2010.pdf)
+  - Available from [Natural Earth](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-urban-area/) at a 500m resolution, based on the same papers
+  - Original data also [available upon request](http://landcoverchange.com/home/data/global_maps/)
