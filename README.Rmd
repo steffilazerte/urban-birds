@@ -5,6 +5,6 @@ output: github_document
 
 ```{r, echo = FALSE, results="asis"}
 r <- list.files("./Results", pattern = ".html")
-cat(paste0(paste0("- [", r, "](https://steffilazerte.github.io/urban-birds/", r, ")"),
+cat(paste0(paste0("- [", r, "](https://steffilazerte.github.io/urban-birds/Results/", r, ")"),
        collapse = "\n"))
 ```
